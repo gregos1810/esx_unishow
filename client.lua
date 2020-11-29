@@ -170,11 +170,17 @@ end)
 
 Citizen.CreateThread(function()
   while true do
-    Wait(0)
+	Wait(0)
+	local pause = false
     local coords = GetEntityCoords(GetPlayerPed(-1))
-        if(Config.Type ~= -1 and GetDistanceBetweenCoords(coords, Config.Zones.Pos.x, Config.Zones.Pos.y, Config.Zones.Pos.z, true) < 10) then
+		if(Config.Type ~= -1 and GetDistanceBetweenCoords(coords, Config.Zones.Pos.x, Config.Zones.Pos.y, Config.Zones.Pos.z, true) < 10) then
+			pause = true
           DrawMarker(2, Config.Zones.Pos.x, Config.Zones.Pos.y, Config.Zones.Pos.z, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 3, 3, 3, 255, 0, 0, 100, false, true, 2, false, false, false, false)
-        end
+		end
+	
+		if not pause then
+			Citizen.Wait(1000)
+		end
   end
 end)
 
@@ -185,9 +191,11 @@ Citizen.CreateThread(function()
 		local coords      = GetEntityCoords(GetPlayerPed(-1))
 		local isInMarker  = false
 		local currentZone = nil
+		local pausestrip = false
 
 		if(GetDistanceBetweenCoords(coords, Config.Zones.Pos.x, Config.Zones.Pos.y, Config.Zones.Pos.z, true) < 1) then
 			isInMarker  = true
+			pausestrip = true
 			currentZone = 'menustrip'
 			LastZone    = 'menustrip'
 		end
@@ -199,6 +207,9 @@ Citizen.CreateThread(function()
 		if not isInMarker and HasAlreadyEnteredMarker then
 			HasAlreadyEnteredMarker = false
 			TriggerEvent('esx_unishow:hasExitedMarker', LastZone)
+		end
+		if not pausestrip then
+			Citizen.Wait(1000)
 		end
 	end
 end)
